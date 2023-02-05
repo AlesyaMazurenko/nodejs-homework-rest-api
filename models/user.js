@@ -1,5 +1,4 @@
 const { Schema, model } = require('mongoose');
-const Joi = require('joi');
 
 const { handleSchemaValidationErrors } = require('../models/helpers/index');
 
@@ -28,26 +27,10 @@ const userSchema = new Schema({
 
 userSchema.post("save", handleSchemaValidationErrors);
 
-const addUserSchema = Joi.object({
-    password: Joi.string().min(6).required(),
-    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
-    subscription: Joi.string(),
-})
-
-const findUserSchema = Joi.object({
-    password: Joi.string().min(6).required(),
-    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
-});
-
-const schemas = {
-    addUserSchema,
-    findUserSchema
-}
 
 
 const User = model('user', userSchema);
 
 module.exports = {
     User,
-    schemas,
 }
