@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 
 
-const JWT_SECRET = process.env.JWT_SECRET; 
+const { JWT_SECRET } = process.env; 
 
 async function register(req, res, next) {
     const { email, password, subscription } = req.body;
