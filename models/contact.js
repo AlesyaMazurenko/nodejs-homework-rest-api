@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 const Joi = require('joi');
+const mongoose = require("mongoose");
 
 const { handleSchemaValidationErrors } = require('../models/helpers/index');
 
@@ -23,6 +24,11 @@ const contactSchema = new Schema({
         type: Boolean,
         default: false,
     },
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: 'user',
+        required: true
+    }
 }, { versionKey: false, timestamps: true });
 
 contactSchema.post("save", handleSchemaValidationErrors);
