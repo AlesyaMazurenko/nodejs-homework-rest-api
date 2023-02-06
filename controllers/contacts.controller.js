@@ -2,13 +2,18 @@ const HttpError = require('../models/helpers/HttpError');
 const { Contact } = require('../models/contact');
 
 const creacteContactService = async (req, res) => {
-  const result = await Contact.create(req.body);
+  const {_id} = req.user;
+  const result = await Contact.create({...req.body, owner: _id});
   res.status(201).json(result);
 }
 
 const getContactsService = async (req, res, next) => {
+  const { _id } = req.user;
+  const { page = 1, limit = 20 } = req.query;
+  const skip = (page - 1) * limit;
   try {
-    const result = await Contact.find();
+    const result = await Contact.find({ owner: _id }, '-createdAt -updatedAt', {skip, limit: Number(limit)}
+).populate('owner', '_id email');
     res.json({
       status: 'success',
       code: 200,
@@ -22,8 +27,10 @@ const getContactsService = async (req, res, next) => {
 };
 
 const getContactByIdService = async (req, res, next) => {
+   const { _id } = req.user;
   const { id } = req.params;
-  const result = await Contact.findById(id);
+  const result = await Contact.findById(id, {}, { owner: _id });
+  
   if (!result) {
     return next(new HttpError(404, "Contact not found"));
   }
