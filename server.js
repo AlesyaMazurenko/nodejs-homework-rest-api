@@ -1,3 +1,5 @@
+require('dotenv').config(); // має бути на самому верху щою відпрацювало
+
 const mongoose = require('mongoose');
 const app = require('./app');
 
