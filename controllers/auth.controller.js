@@ -2,7 +2,7 @@ const HttpError = require('../models/helpers/HttpError');
 const { User } = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
-
+const gravatar = require('gravatar');
 
 const { JWT_SECRET } = process.env; 
 
@@ -11,16 +11,19 @@ async function register(req, res, next) {
 
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
+    const avatarURL = gravatar.url(email);
 
     try {
         const savedUser = await User.create({
             email,
             password: hashedPassword,
+            avatarURL,
             subscription
         });
         res.status(201).json({
             user: {
                 email,
+                avatarURL,
                 subscription
             },
         });
@@ -51,7 +54,7 @@ async function login(req, res, next) {
     }
     
     const payload = { id: storedUser._id };
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "1h"});
+    const token = jwt.sign(payload, JWT_SECRET, {expiresIn: "1h"});
 
     const updatedUser = await User.findByIdAndUpdate(storedUser._id,
         { token: token }, {new: true})

@@ -35,7 +35,7 @@ routerContacts.patch('/:id/favorite',
     auth,
     isValidId,
     validateBody(schemas.updateFavoriteSchema),
-    tryCatchWrapper(ctrlTasks.updateFavoriteService))
+    tryCatchWrapper(ctrlTasks.updateFavoriteService));
 
 
 module.exports = { routerContacts };

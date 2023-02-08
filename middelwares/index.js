@@ -2,7 +2,9 @@ const HttpError = require('../models/helpers/HttpError');
 
 const isValidId = require('./isValidId');
 const jwt = require('jsonwebtoken');
-const { User } = require('../models/user'); 
+const { User } = require('../models/user');
+const multer = require('multer'); 
+const path = require('path');
 
 function validateBody(schema) {
     
@@ -47,8 +49,26 @@ async function auth(req, res, next) {
     next();
 }
 
+const multerConfig = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.resolve(__dirname, '../tmp'));
+  },
+  filename: function (req, file, cb) {
+    cb(null, Math.random() + file.originalname);
+  },
+  limits: {
+    fileSize: 2048
+  },
+});
+
+const upload = multer({
+  storage: multerConfig,
+  
+});
+
 module.exports = {
     validateBody,
     isValidId,
-    auth
-}
+    auth,
+    upload,
+};
