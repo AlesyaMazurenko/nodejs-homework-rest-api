@@ -75,5 +75,3 @@ module.exports = {
     updateSubscription,
     uploadAvatar,
 }
-
-// current, logout, updateSubscription
