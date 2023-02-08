@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../models/user');
 const multer = require('multer'); 
 const path = require('path');
-const fs = require('fs/promises');
 
 function validateBody(schema) {
     
@@ -61,7 +60,7 @@ const multerConfig = multer.diskStorage({
     fileSize: 2048
   },
 });
-  
+
 const upload = multer({
   storage: multerConfig,
   
