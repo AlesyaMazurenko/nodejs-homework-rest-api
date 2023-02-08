@@ -27,13 +27,15 @@ const getContactsService = async (req, res, next) => {
 };
 
 const getContactByIdService = async (req, res, next) => {
-   const { _id } = req.user;
+  const { _id } = req.user;
   const { id } = req.params;
+
   const result = await Contact.findById(id, {}, { owner: _id });
   
   if (!result) {
     return next(new HttpError(404, "Contact not found"));
   }
+  
   return res.status(200).json(result);
 }
 
@@ -63,6 +65,8 @@ const updateFavoriteService = async (req, res, next) => {
   }
   res.status(200).json(result);
 }
+
+
 
 module.exports = {
   getContactsService,
