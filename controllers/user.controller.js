@@ -2,6 +2,7 @@ const HttpError = require('../models/helpers/HttpError');
 const { User } = require('../models/user');
 const path = require('path');
 const fs = require('fs/promises');
+const Jimp = require("jimp");
 
 async function current(req, res, next) {
     const { _id } = req.user;
@@ -15,8 +16,6 @@ async function current(req, res, next) {
         email: user.email,
         subscription: user.subscription,
     });
-
-    
 }
 
 async function logout(req, res, next) {
@@ -30,8 +29,6 @@ async function logout(req, res, next) {
     await User.findByIdAndUpdate(_id, { $set: { token: null } });
 
     return res.status(204).json();  
-    
-       
 }
 
 async function updateSubscription(req, res, next) {
@@ -41,11 +38,14 @@ async function updateSubscription(req, res, next) {
 }
 
 const uploadAvatar = async (req, res, next) => {
-  // req.file
+    // req.file
     console.log('req.file', req.file);
     const { filename } = req.file;
     const tmpPath = path.resolve(__dirname, '../tmp', filename);
     const publicPath = path.resolve(__dirname, '../public/avatars', filename);
+    const { _id } = req.user;
+
+    (await Jimp.read(tmpPath)).resize(250, 250).write(tmpPath);
 
     try { 
         await fs.rename(tmpPath, publicPath);
@@ -53,8 +53,6 @@ const uploadAvatar = async (req, res, next) => {
         await fs.unlink(tmpPath);
         throw error;
     }
-
-    const { _id } = req.user;
     
     const imagePath = `/public/avatars/${filename}`;
     const userAvatar = await User.findByIdAndUpdate(_id,
@@ -68,6 +66,7 @@ const uploadAvatar = async (req, res, next) => {
     }
   });
 }
+
 
 module.exports = {
     current,
