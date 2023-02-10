@@ -1,4 +1,4 @@
-const HttpError = require('../models/helpers/HttpError');
+const { sendMail, HttpError } = require('../models/helpers/index');
 const { User } = require('../models/user');
 const path = require('path');
 const fs = require('fs/promises');
@@ -67,10 +67,43 @@ const uploadAvatar = async (req, res, next) => {
   });
 }
 
+const verifyEmail = async (req, res, next) => {
+    const { verificationToken } = req.params;
+    const user = await User.findOne({ verificationToken });
+    if (!user) {
+        return next(new HttpError(404, 'User not found'))
+    }
+    await User.findByIdAndUpdate(user._id, { verify: true, verificationToken: '' });
+    return res.status(200).json({ message: 'Verification successful' });
+};
+
+const resendVerifyEmail = async (req, res, next) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+        return next(new HttpError(400, 'Missing required field email'));
+    };
+    if (user.verify) {
+        return next(new HttpError(400, 'Verification has already been passed'));
+    };
+    
+    const mail = {
+        to: email,
+        subject: 'Підтвердження реєстраціі на сайті',
+        html: `<a href="http://localhost:3002/api/users/verify/${user.verificationToken}" target="_blanc">Натисніть для підтвердження</a>`,
+    };
+    await sendMail(mail);
+    res.json({
+        message: 'Verification email sent'
+    });
+};
+
 
 module.exports = {
     current,
     logout,
     updateSubscription,
     uploadAvatar,
+    verifyEmail,
+    resendVerifyEmail,
 }
