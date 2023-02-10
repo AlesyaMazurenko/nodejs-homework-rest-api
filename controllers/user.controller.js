@@ -1,4 +1,4 @@
-const { sendMail, HttpError } = require('../models/helpers/index');
+const { sendEmail, HttpError } = require('../models/helpers/index');
 const { User } = require('../models/user');
 const path = require('path');
 const fs = require('fs/promises');
@@ -92,7 +92,7 @@ const resendVerifyEmail = async (req, res, next) => {
         subject: 'Підтвердження реєстраціі на сайті',
         html: `<a href="http://localhost:3002/api/users/verify/${user.verificationToken}" target="_blanc">Натисніть для підтвердження</a>`,
     };
-    await sendMail(mail);
+    await sendEmail(mail);
     res.json({
         message: 'Verification email sent'
     });

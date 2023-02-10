@@ -5,7 +5,7 @@ const gravatar = require('gravatar');
 const { nanoid } = require('nanoid');
 
 const { User } = require("../models/user");
-const { sendMail, HttpError } = require('../models/helpers/index');
+const { sendEmail, HttpError } = require('../models/helpers/index');
 
 
 const { JWT_SECRET } = process.env; 
@@ -31,7 +31,7 @@ async function register(req, res, next) {
             subject: 'Підтвердження реєстраціі на сайті',
             html: `<a href="http://localhost:3002/api/users/verify/${verificationToken}" target="_blanc">Натисніть для підтвердження</a>`,
         };
-        await sendMail(mail);
+        await sendEmail(mail);
         res.status(201).json({
             user: {
                 email,
