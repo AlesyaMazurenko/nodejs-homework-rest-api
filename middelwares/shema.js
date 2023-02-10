@@ -20,16 +20,20 @@ const addContactSchema = Joi.object({
     favorite: Joi.bool(),
 })
 
-
 const updateFavoriteSchema = Joi.object({
     favorite: Joi.bool().required(),
+})
+
+const verifyEmailSchema = Joi.object({
+    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).required(),
 })
 
 const schemas = {
     addUserSchema,
     findUserSchema,
     addContactSchema,
-    updateFavoriteSchema
+    updateFavoriteSchema,
+    verifyEmailSchema,
 }
 
 module.exports = { schemas };
