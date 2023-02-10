@@ -1,8 +1,12 @@
-const HttpError = require('../models/helpers/HttpError');
-const { User } = require("../models/user");
+// const HttpError = require('../models/helpers/HttpError');
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const gravatar = require('gravatar');
+const { nanoid } = require('nanoid');
+
+const { User } = require("../models/user");
+const { sendMail, HttpError } = require('../models/helpers/index');
+
 
 const { JWT_SECRET } = process.env; 
 
@@ -12,14 +16,22 @@ async function register(req, res, next) {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
     const avatarURL = gravatar.url(email);
+    const verificationToken = nanoid();
 
     try {
         const savedUser = await User.create({
             email,
             password: hashedPassword,
             avatarURL,
-            subscription
+            subscription,
+            verificationToken,
         });
+        const mail = {
+            to: email,
+            subject: 'Підтвердження реєстраціі на сайті',
+            html: `<a href="http://localhost:3002/api/users/verify/${verificationToken}" target="_blanc">Натисніть для підтвердження</a>`,
+        };
+        await sendMail(mail);
         res.status(201).json({
             user: {
                 email,
@@ -53,6 +65,9 @@ async function login(req, res, next) {
         throw new HttpError(401, 'Email or password is wrong');
     }
     
+    if (!storedUser.verify) {
+        return next(new HttpError(400, 'Email not verify'));
+    }
     const payload = { id: storedUser._id };
     const token = jwt.sign(payload, JWT_SECRET, {expiresIn: "1h"});
 
