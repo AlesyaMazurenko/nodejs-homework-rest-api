@@ -1,3 +1,4 @@
+const { boolean } = require('joi');
 const { Schema, model } = require('mongoose');
 
 const { handleSchemaValidationErrors } = require('../models/helpers/index');
@@ -26,7 +27,15 @@ const userSchema = new Schema({
     avatarURL: {
         type: String,
         default: null,
-    }
+    }, 
+    verify: {
+        type: Boolean,
+        default: false, 
+    },
+    verificationToken: {
+        type: String,
+        required: [true, 'Verify token is required'],
+  },
 }, { versionKey: false, timestamps: true });
 
 userSchema.post("save", handleSchemaValidationErrors);
