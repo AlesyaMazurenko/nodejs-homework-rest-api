@@ -29,7 +29,7 @@ async function register(req, res, next) {
         const mail = {
             to: email,
             subject: 'Підтвердження реєстраціі на сайті',
-            html: `<a href="http://localhost:3002/api/users/verify/${verificationToken}" target="_blanc">Натисніть для підтвердження</a>`,
+            html: `<a href="http://localhost:3002/api/users/verify/${verificationToken}" target="_blank">Натисніть для підтвердження</a>`,
         };
         await sendEmail(mail);
         res.status(201).json({
