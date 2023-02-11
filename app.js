@@ -17,7 +17,7 @@ const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
 app.use(logger(formatsLogger));
 app.use(express.json()); // tell express to work with JSON
 app.use(cors()); // разрешаем кроссдоменные запросы к нашему приложению через промежуточное ПО cors
-app.use('/public', express.static('public')); // Настрой Express на раздачу статических файлов из папки public. http://localhost:<порт>/avatars/<имя файла с расширением>
+app.use(express.static('public')); // Настрой Express на раздачу статических файлов из папки public. http://localhost:<порт>/avatars/<имя файла с расширением>
 
 // routes
 app.use('/api/contacts', routerContacts);

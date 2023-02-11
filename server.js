@@ -3,6 +3,8 @@ require('dotenv').config(); // має бути на самому верху що
 const mongoose = require('mongoose');
 const app = require('./app');
 
+// const { sendEmail } = require('./models/helpers/index');
+
 mongoose.set('strictQuery', false);
 
 // connection to Mongoose DB
@@ -15,6 +17,8 @@ mongoose.connect(DB_HOST)
     .catch(error => {
       console.log(`Server not running. Error message: ${error.message}`);
       process.exit(1);
-  })
+    })
+  
+// sendEmail();
 
   

@@ -1,5 +1,6 @@
 const handleSchemaValidationErrors = require("./handleSchemaValidationErrors");
 const HttpError = require('./HttpError');
+const sendEmail = require('./sendEmail');
 
 function tryCatchWrapper(endpointFn) {
     return async (req, res, next) => {
@@ -24,4 +25,6 @@ module.exports = {
     tryCatchWrapper,
     handleSchemaValidationErrors,
     validateBody,
+    sendEmail,
+    HttpError,
 };
